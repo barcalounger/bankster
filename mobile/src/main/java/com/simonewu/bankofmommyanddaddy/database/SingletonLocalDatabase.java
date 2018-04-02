@@ -12,10 +12,11 @@ public class SingletonLocalDatabase {
 
     private SingletonLocalDatabase() {       }
 
+    // TODO: use async calls instead so we don't access the database from the main thread
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context,
-                    AppDatabase.class, "database-name").build();
+                    AppDatabase.class, "database-name").allowMainThreadQueries().build();
         }
         return instance;
     }

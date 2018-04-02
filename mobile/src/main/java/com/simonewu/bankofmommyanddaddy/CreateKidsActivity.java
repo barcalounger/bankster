@@ -1,9 +1,11 @@
 package com.simonewu.bankofmommyanddaddy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +23,7 @@ public class CreateKidsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_kids);
 
-        Button button = (Button) findViewById(R.id.done);
+        Button button = findViewById(R.id.done);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,9 +33,11 @@ public class CreateKidsActivity extends AppCompatActivity {
     }
 
     private void createKidInLocalStorage(View view) {
+        Log.i("CreateKidsActivity", "trying to create kid");
         Kid newKid = new Kid();
         EditText kidName = findViewById(R.id.kidName);
         newKid.setFirstName(kidName.getText().toString());
+        Log.i("CreateKidsActivity", "with name: " + kidName.getText().toString());
         EditText balanceStr = findViewById(R.id.kidOpeningBalance);
         BigDecimal balance;
         try {
@@ -50,5 +54,7 @@ public class CreateKidsActivity extends AppCompatActivity {
         newKid.setUid(java.util.UUID.randomUUID().toString());
         AppDatabase db = SingletonLocalDatabase.getInstance(getApplicationContext());
         db.kidDao().insertAll(newKid);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -3,6 +3,7 @@ package com.simonewu.bankofmommyanddaddy.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 /**
  * Created by simone on 3/23/18.
@@ -11,6 +12,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class Kid {
     @PrimaryKey
+    @NonNull
     private String uid;
 
     @ColumnInfo(name = "first_name")
@@ -51,6 +53,23 @@ public class Kid {
     }
 
     public void setCents(int cents) {
+        while (cents > 100) {
+            this.dollars += 1;
+            cents -= 100;
+        }
         this.cents = cents;
+    }
+
+    public String toString() {
+
+        return this.firstName + " - " + this.getBalanceString();
+    }
+
+    public String getBalanceString() {
+        String leadingzero = "";
+        if (this.cents < 10) {
+            leadingzero = "0";
+        }
+        return "$" +this.dollars + "." + leadingzero + this.cents;
     }
 }

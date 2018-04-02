@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.simonewu.bankofmommyanddaddy.CreateKidsActivity">
+    tools:context="com.simonewu.bankofmommyanddaddy.EditKidActivity">
 
     <EditText
         android:id="@+id/kidName"
@@ -34,12 +34,12 @@
         android:layout_height="19dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="33dp"
-        android:text="Opening Balance"
+        android:text="Current Balance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kidsName" />
 
     <EditText
-        android:id="@+id/kidOpeningBalance"
+        android:id="@+id/kidBalance"
         android:layout_width="215dp"
         android:layout_height="46dp"
         android:layout_marginEnd="32dp"
@@ -52,11 +52,23 @@
 
     <Button
         android:id="@+id/done"
-        android:layout_width="88dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="256dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="Done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/deleteKid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="Delete Kid"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kidOpeningBalance" />
+        app:layout_constraintTop_toBottomOf="@+id/currentBalance" />
 </android.support.constraint.ConstraintLayout>
