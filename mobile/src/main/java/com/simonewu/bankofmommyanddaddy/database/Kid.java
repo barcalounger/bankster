@@ -66,10 +66,14 @@ public class Kid {
     }
 
     public String getBalanceString() {
+        return "$" + this.getBalanceStringWithoutCurrencySign();
+    }
+
+    public String getBalanceStringWithoutCurrencySign() {
         String leadingzero = "";
         if (this.cents < 10) {
             leadingzero = "0";
         }
-        return "$" +this.dollars + "." + leadingzero + this.cents;
+        return this.dollars + "." + leadingzero + this.cents;
     }
 }

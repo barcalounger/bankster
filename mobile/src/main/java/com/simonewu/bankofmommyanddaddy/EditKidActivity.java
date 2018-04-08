@@ -17,8 +17,10 @@ import android.widget.TextView;
 import com.simonewu.bankofmommyanddaddy.database.AppDatabase;
 import com.simonewu.bankofmommyanddaddy.database.Kid;
 import com.simonewu.bankofmommyanddaddy.database.SingletonLocalDatabase;
+import com.simonewu.bankofmommyanddaddy.database.TransactionRecord;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class EditKidActivity extends AppCompatActivity {
 
@@ -34,7 +36,8 @@ public class EditKidActivity extends AppCompatActivity {
         final Kid currentKid = db.kidDao().loadById(id);
 
         ((EditText) findViewById(R.id.kidName)).setText(currentKid.getFirstName());
-        ((EditText) findViewById(R.id.kidBalance)).setText(currentKid.getBalanceString());
+        ((EditText) findViewById(R.id.kidBalance))
+                .setText(currentKid.getBalanceStringWithoutCurrencySign());
 
         Button doneButton = findViewById(R.id.done);
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +68,7 @@ public class EditKidActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         Intent intent = new Intent(view.getContext(), KidDetailsActivity.class);
-                        intent.putExtra("id", id);
+                        intent.putExtra("id", currentKid.getUid());
                         view.getContext().startActivity(intent);
                     }
                 });
@@ -83,22 +86,32 @@ public class EditKidActivity extends AppCompatActivity {
         kid.setFirstName(kidName.getText().toString());
         Log.i("EditKidsActivity", "with name: " + kidName.getText().toString());
 
-        // TODO: why isn't this edit flow working?
-        EditText balanceStr = findViewById(R.id.kidBalance);
-        BigDecimal balance;
-        try {
-            balance = new BigDecimal(balanceStr.getText().toString());
-        } catch (NumberFormatException e) {
-            balance = new BigDecimal(0);
+        String balanceStr = ((TextView)findViewById(R.id.kidBalance)).getText().toString();
+        if (!balanceStr.equals(kid.getBalanceStringWithoutCurrencySign())) {
+            BigDecimal balance;
+            try {
+                balance = new BigDecimal(balanceStr);
+            } catch (NumberFormatException e) {
+                Log.i("EditKidsActivity",
+                        "exception parsing decimal: " + balanceStr);
+                balance = new BigDecimal(0);
+            }
+            int dollars = balance.intValue();
+            kid.setDollars(dollars);
+
+            int cents = balance.subtract(new BigDecimal(dollars)).scaleByPowerOfTen(2).intValue();
+            kid.setCents(cents);
+
+            AppDatabase db = SingletonLocalDatabase.getInstance(getApplicationContext());
+            db.kidDao().update(kid);
+            TransactionRecord tr = new TransactionRecord();
+            tr.setTid(java.util.UUID.randomUUID().toString());
+            tr.setAmount(balanceStr);
+            tr.setKidId(kid.getUid());
+            tr.setTimestamp(System.currentTimeMillis());
+            tr.setNote("");
+            db.transactionRecordDao().insertAll(tr);
         }
-        int dollars = balance.intValue();
-        kid.setDollars(dollars);
-
-        int cents = balance.subtract(new BigDecimal(dollars)).scaleByPowerOfTen(2).intValue();
-        kid.setCents(cents);
-
-        AppDatabase db = SingletonLocalDatabase.getInstance(getApplicationContext());
-        db.kidDao().update(kid);
         Intent intent = new Intent(this, ListKidsActivity.class);
         startActivity(intent);
     }
