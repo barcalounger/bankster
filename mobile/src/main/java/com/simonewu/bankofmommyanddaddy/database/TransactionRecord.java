@@ -5,6 +5,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 @Entity
 public class TransactionRecord {
     @PrimaryKey
@@ -71,5 +74,14 @@ public class TransactionRecord {
                 ", timestamp=" + timestamp +
                 ", note='" + note + '\'' +
                 '}';
+    }
+
+    public String toPrettyString() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(this.timestamp);
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        String formatted = format1.format(calendar.getTime());
+
+        return formatted + "  " + this.amount + "  " + this.note;
     }
 }

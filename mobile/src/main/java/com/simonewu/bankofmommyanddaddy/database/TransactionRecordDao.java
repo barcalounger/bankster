@@ -19,7 +19,7 @@ public interface TransactionRecordDao {
     TransactionRecord loadById(String txid);
 
     @Query("SELECT * FROM transactionRecord WHERE kidId = :kidId ORDER BY timestamp DESC")
-    TransactionRecord loadByKidId(String kidId);
+    List<TransactionRecord> loadByKidId(String kidId);
 
     @Insert
     void insertAll(TransactionRecord... records);
